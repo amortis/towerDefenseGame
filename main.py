@@ -1,7 +1,7 @@
 import pygame as pg
 
 import constants as c
-from enemies.enemy import EnemyFactory
+from enemy import EnemyFactory
 from world import World
 from random import choice
 from turret import Turret
