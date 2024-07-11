@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox
 import database  # Импорт функций из database.py
+import menu
 
 
 # Функции для обработки регистрации и входа
@@ -26,6 +27,8 @@ def login():
             messagebox.showinfo("Успех", "Вход выполнен успешно!")
             root.destroy()
             # Переход к следующей части игры
+            m = menu.Menu(user_id)
+            m.run()
         else:
             messagebox.showerror("Ошибка", "Ошибка входа!")
     else:
