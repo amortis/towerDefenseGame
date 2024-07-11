@@ -34,7 +34,7 @@ def login():
     else:
         messagebox.showwarning("Предупреждение", "Поля не могут быть пустыми!")
 
-
+database.create_database()
 # Создание окна
 root = tk.Tk()
 root.title("Tower Defense - Вход")

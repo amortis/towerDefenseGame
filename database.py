@@ -1,6 +1,37 @@
 import hashlib
 import sqlite3
 
+import sqlite3
+
+def create_database():
+    # Подключение к базе данных (создается, если не существует)
+    conn = sqlite3.connect('tower_defense.db')
+    cursor = conn.cursor()
+
+    # Создание таблицы пользователей, если она не существует
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    )
+    ''')
+
+    # Создание таблицы рекордов уровней, если она не существует
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS level_records (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        level INTEGER,
+        score INTEGER,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+    )
+    ''')
+
+    # Сохранение изменений и закрытие соединения
+    conn.commit()
+    conn.close()
+
 
 def register_user(username, password):
     """
