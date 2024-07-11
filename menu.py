@@ -145,6 +145,8 @@ class Menu:
                                     import game  # Ленивый импорт
                                     game.Game(user_id=self.user_id, level=i + 1)
                                     print(f"User {self.user_id} selected level {i + 1}")
+                                    self.level_select_active = False
+                                    self.main_menu_active = True
                     elif self.records_active:
                         if self.back_button.collidepoint(event.pos):
                             self.main_menu_active = True

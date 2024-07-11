@@ -44,14 +44,14 @@ class Game:
             "elite": pg.image.load('assets/images/enemies/enemy_4.png').convert_alpha()
         }
         # buttons
-        self.buy_turret_image = pg.image.load("assets/images/buttons/buy_turret.png").convert_alpha()
-        self.begin_image = pg.image.load("assets/images/buttons/begin.png").convert_alpha()
-        self.cancel_image = pg.image.load("assets/images/buttons/cancel.png").convert_alpha()
-        self.pause_image = pg.image.load("assets/images/buttons/pause.png").convert_alpha()
-        self.play_image = pg.image.load("assets/images/buttons/play.png").convert_alpha()
-        self.speed_image = pg.image.load("assets/images/buttons/fast_forward.png").convert_alpha()
-        self.restart_image = pg.image.load("assets/images/buttons/restart.png").convert_alpha()
-        self.menu_image = pg.image.load("assets/images/buttons/restart.png").convert_alpha()
+        self.buy_turret_image = pg.image.load("assets/images/buttons_ru/buy_turret.png").convert_alpha()
+        self.begin_image = pg.image.load("assets/images/buttons_ru/begin.png").convert_alpha()
+        self.cancel_image = pg.image.load("assets/images/buttons_ru/cancel.png").convert_alpha()
+        self.pause_image = pg.image.load("assets/images/buttons_ru/pause.png").convert_alpha()
+        self.play_image = pg.image.load("assets/images/buttons_ru/play.png").convert_alpha()
+        self.speed_image = pg.image.load("assets/images/buttons_ru/fast_forward.png").convert_alpha()
+        self.restart_image = pg.image.load("assets/images/buttons_ru/restart.png").convert_alpha()
+        self.menu_image = pg.image.load("assets/images/buttons_ru/exit.png").convert_alpha()
 
 
         # Create world
@@ -66,12 +66,12 @@ class Game:
         self.turret_button = Button(c.SCREEN_WIDTH + 30, 120, self.buy_turret_image, True)
         self.cancel_button = Button(c.SCREEN_WIDTH + 30, 180, self.cancel_image, True)
         self.pause_button = Button(c.SCREEN_WIDTH + 30, 240, self.pause_image, True)
-        self.begin_button = Button(c.SCREEN_WIDTH + 60, 300, self.begin_image, True)
+        self.begin_button = Button(c.SCREEN_WIDTH + 60, 450, self.begin_image, True)
         self.play_button = Button(c.SCREEN_WIDTH + 30, 300, self.play_image, True)
-        self.speed_button = Button(c.SCREEN_WIDTH + 50, 360, self.speed_image, True)
+        self.speed_button = Button(c.SCREEN_WIDTH + 30, 360, self.speed_image, True)
         self.restart_button = Button(310, 340, self.restart_image, True)
         self.menu_button = Button(310, 410, self.menu_image, True)
-        self.right_menu_button = Button(c.SCREEN_WIDTH + 50, 550, self.menu_image, True)
+        self.right_menu_button = Button(c.SCREEN_WIDTH + 30, 550, self.menu_image, True)
 
         # Load fonts for displaying text on the screen
         self.text_font = pg.font.SysFont("Consolas", 24, bold=True)
