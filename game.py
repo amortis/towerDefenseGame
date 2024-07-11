@@ -43,7 +43,7 @@ class Game:
             "strong": pg.image.load('assets/images/enemies/enemy_3.png').convert_alpha(),
             "elite": pg.image.load('assets/images/enemies/enemy_4.png').convert_alpha()
         }
-        # buttons
+        # buttons_image
         self.buy_turret_image = pg.image.load("assets/images/buttons_ru/buy_turret.png").convert_alpha()
         self.begin_image = pg.image.load("assets/images/buttons_ru/begin.png").convert_alpha()
         self.cancel_image = pg.image.load("assets/images/buttons_ru/cancel.png").convert_alpha()

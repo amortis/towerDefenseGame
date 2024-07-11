@@ -1,5 +1,6 @@
 import pygame
 import database  # Импорт функций из database.py
+from button import Button
 
 
 class Menu:
@@ -7,7 +8,7 @@ class Menu:
 
         pygame.init()
 
-        self.WIDTH, self.HEIGHT = 1260, 640  # Новые размеры окна
+        self.WIDTH, self.HEIGHT = 1260, 780  # Новые размеры окна
         self.win = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("Tower Defense - Меню")
 
@@ -44,11 +45,32 @@ class Menu:
         self.exit_active = False
         self.main_menu_active = True
         self.level_select_active = False
+        self.help_page = 1
 
         # Кнопка назад и кнопки уровней
         self.back_button = pygame.Rect(20, 20, 150, 50)
         self.level_buttons = [pygame.Rect((self.WIDTH - 100 * 5 - 20 * 4) // 2 + (i % 5) * (100 + 20),
                                           100 + (i // 5) * (50 + 20), 100, 50) for i in range(15)]
+
+        # КАРТИНКИ ДЛЯ ТУТОРИАЛА
+        # buttons_image
+        self.buy_turret_image = pygame.image.load("assets/images/buttons_ru/buy_turret.png").convert_alpha()
+        self.begin_image = pygame.image.load("assets/images/buttons_ru/begin.png").convert_alpha()
+        self.cancel_image = pygame.image.load("assets/images/buttons_ru/cancel.png").convert_alpha()
+        self.pause_image = pygame.image.load("assets/images/buttons_ru/pause.png").convert_alpha()
+        self.play_image = pygame.image.load("assets/images/buttons_ru/play.png").convert_alpha()
+        self.speed_image = pygame.image.load("assets/images/buttons_ru/fast_forward.png").convert_alpha()
+        self.restart_image = pygame.image.load("assets/images/buttons_ru/restart.png").convert_alpha()
+        self.menu_image = pygame.image.load("assets/images/buttons_ru/exit.png").convert_alpha()
+        self.next_image = pygame.image.load("assets/images/buttons_ru/next-button-image.png").convert_alpha()
+        self.prev_image = pygame.image.load("assets/images/buttons_ru/previous-button-image.png").convert_alpha()
+        self.next_image = pygame.transform.scale(self.next_image, (128, 128))
+        self.prev_image = pygame.transform.scale(self.prev_image, (128, 128))
+        self.help_page = 1
+
+        # Добавить кнопки для навигации по страницам справки
+        self.next_button = Button(self.WIDTH - 150, 200, self.next_image, True)  # Позиция и размер кнопки "Вперед"
+        self.prev_button = Button(10, 200, self.prev_image, True)  # Позиция и размер кнопки "Назад"
 
     def draw_text(self, surface, text, pos, font, color):
         text_surface = font.render(text, True, color)
@@ -105,6 +127,63 @@ class Menu:
         pygame.draw.line(surface, self.BLACK, (pos[0], pos[1] + (len(data) + 1) * row_height),
                             (pos[0] + sum(col_widths), pos[1] + (len(data) + 1) * row_height))
 
+    def draw_help_page1(self):
+        # Отрисовка первой страницы справки
+        self.draw_text(self.win, "Как играть:", (self.WIDTH // 2 - 600, 100), font=self.font, color=self.BLACK)
+        self.draw_text(self.win, "1. Цель игры - защитить свою базу от волны врагов.", (self.WIDTH // 2 - 600, 150),
+                       font=self.font, color=self.BLACK)
+        self.draw_text(self.win, "2. Размещайте турели на поле, чтобы уничтожать врагов.", (self.WIDTH // 2 - 600, 200),
+                       font=self.font, color=self.BLACK)
+        self.draw_text(self.win, "3. Используйте деньги, чтобы покупать турели.", (self.WIDTH // 2 - 600, 250),
+                       font=self.font, color=self.BLACK)
+        self.draw_text(self.win, "4. Убедитесь, что враги не достигнут конца маршрута.", (self.WIDTH // 2 - 600, 300),
+                       font=self.font, color=self.BLACK)
+        self.draw_text(self.win, "Кнопки:", (self.WIDTH // 2 - 600, 350), font=self.font, color=self.BLACK)
+
+        self.win.blit(self.buy_turret_image, (self.WIDTH // 2 - 600, 400))
+        self.draw_text(self.win, "- Покупает новую турель для размещения на поле в кругах.",
+                       (self.WIDTH // 2 - 400, 410), font=self.font, color=self.BLACK)
+
+        self.win.blit(self.cancel_image, (self.WIDTH // 2 - 600, 450))
+        self.draw_text(self.win, "- Отменяет покупку туррели.", (self.WIDTH // 2 - 400, 460), font=self.font,
+                       color=self.BLACK)
+
+        self.win.blit(self.pause_image, (self.WIDTH // 2 - 600, 500))
+        self.draw_text(self.win, "- Приостанавливает игру.", (self.WIDTH // 2 - 400, 510), font=self.font,
+                       color=self.BLACK)
+
+        self.win.blit(self.play_image, (self.WIDTH // 2 - 600, 550))
+        self.draw_text(self.win, "- Продолжает приостановленную игру.", (self.WIDTH // 2 - 400, 560),
+                       font=self.font, color=self.BLACK)
+
+        self.win.blit(self.speed_image, (self.WIDTH // 2 - 600, 600))
+        self.draw_text(self.win, "- Увеличивает скорость игры.", (self.WIDTH // 2 - 400, 610),
+                       font=self.font, color=self.BLACK)
+
+        self.win.blit(self.menu_image, (self.WIDTH // 2 - 600, 650))
+        self.draw_text(self.win, "- Возвращает в главное меню.", (self.WIDTH // 2 - 400, 660),
+                       font=self.font, color=self.BLACK)
+
+    def draw_help_page2(self):
+        # Отрисовка второй страницы справки
+        self.draw_text(self.win, "Типы врагов:", (self.WIDTH // 2 - 500, 100), font=self.font, color=self.BLACK)
+
+        self.win.blit(pygame.image.load("assets/images/enemies/enemy_1.png").convert_alpha(), (self.WIDTH // 2 - 500, 130))
+        self.draw_text(self.win, "Слабый - Низкое здоровье, медленная скорость.", (self.WIDTH // 2 - 400, 160),
+                       font=self.font, color=self.BLACK)
+
+        self.win.blit(pygame.image.load("assets/images/enemies/enemy_2.png").convert_alpha(), (self.WIDTH // 2 - 500, 200))
+        self.draw_text(self.win, "Средний - Среднее здоровье, средняя скорость.", (self.WIDTH // 2 - 400, 230),
+                       font=self.font, color=self.BLACK)
+
+        self.win.blit(pygame.image.load("assets/images/enemies/enemy_3.png").convert_alpha(), (self.WIDTH // 2 - 500, 280))
+        self.draw_text(self.win, "Сильный - Высокое здоровье, быстрая скорость.", (self.WIDTH // 2 - 400, 310),
+                       font=self.font, color=self.BLACK)
+
+        self.win.blit(pygame.image.load("assets/images/enemies/enemy_1.png").convert_alpha(), (self.WIDTH // 2 - 500, 350))
+        self.draw_text(self.win, "Элитный - Очень высокое здоровье, высокая скорость.", (self.WIDTH // 2 - 400, 380),
+                       font=self.font, color=self.BLACK)
+
     def run(self):
         running = True
 
@@ -131,11 +210,13 @@ class Menu:
                             self.main_menu_active = False
                             self.records_active = True
                         elif self.help_button.collidepoint(event.pos):
-                            print(f"User {self.user_id} checked help")
+                            self.main_menu_active = False
+                            self.help_active = True
                         elif self.exit_button.collidepoint(event.pos):
                             running = False
                     elif self.level_select_active:
                         if self.back_button.collidepoint(event.pos):
+                            self.help_page = 1
                             self.main_menu_active = True
                             self.level_select_active = False
                         else:
@@ -144,13 +225,13 @@ class Menu:
                                     # Запуск игры
                                     import game  # Ленивый импорт
                                     game.Game(user_id=self.user_id, level=i + 1)
-                                    print(f"User {self.user_id} selected level {i + 1}")
                                     self.level_select_active = False
                                     self.main_menu_active = True
-                    elif self.records_active:
+                    elif self.records_active or self.help_active:
                         if self.back_button.collidepoint(event.pos):
                             self.main_menu_active = True
                             self.records_active = False
+                            self.help_page = 1
 
             if self.main_menu_active:
                 self.draw_button(self.win, self.play_button, "Играть", self.font, self.LIGHT_GRAY, self.DARK_GRAY,
@@ -177,6 +258,20 @@ class Menu:
                 formatted_scores = [(i + 1, username, level, score) for i, (username, level, score) in
                                     enumerate(top_scores)]
                 self.draw_table(self.win, formatted_scores, ((self.WIDTH - 550) // 2, 100), self.small_font, self.BLACK)
+            elif self.help_active:
+                self.draw_text(self.win, "Справка", (self.WIDTH // 2 - 100, 20), font=self.font, color=self.BLACK)
+
+                if self.help_page == 1:
+                    self.draw_help_page1()
+                    if self.next_button.draw(self.win):
+                        self.help_page = 2
+                elif self.help_page == 2:
+                    self.draw_help_page2()
+                    if self.prev_button.draw(self.win):
+                        self.help_page = 1
+
+                self.draw_button(self.win, self.back_button, "Назад", self.small_font, self.LIGHT_GRAY, self.DARK_GRAY,
+                                 False)
 
             pygame.display.flip()
 
