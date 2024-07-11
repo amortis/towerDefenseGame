@@ -1,9 +1,9 @@
 ENEMY_SPAWN_DATA = [
   {
     #1
-    "weak": 15,
-    "medium": 10,
-    "strong": 10,
+    "weak": 10,
+    "medium": 0,
+    "strong": 0,
     "elite": 0
   },
   {
@@ -124,3 +124,21 @@ ENEMY_DATA = {
     "speed": 4
   }
 }
+
+STARTING_MONEY = [
+    250,  # Level 1
+    300,  # Level 2
+    350,  # Level 3
+    400,  # Level 4
+    450,  # Level 5
+    500,  # Level 6
+    550,  # Level 7
+    600,  # Level 8
+    650,  # Level 9
+    700,  # Level 10
+    750,  # Level 11
+    800,  # Level 12
+    850,  # Level 13
+    900,  # Level 14
+    950   # Level 15
+]

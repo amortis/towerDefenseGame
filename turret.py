@@ -67,6 +67,7 @@ class Turret(pg.sprite.Sprite):
             x_dist = self.target.pos[0] - self.x
             y_dist = self.target.pos[1] - self.y
             self.angle = math.degrees(math.atan2(-y_dist, x_dist))
+            # damage enemy
             self.target.health -= c.DAMAGE
 
     def play_animation(self):

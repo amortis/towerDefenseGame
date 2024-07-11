@@ -1,15 +1,12 @@
 import pygame as pg
 from pygame.math import Vector2
 import math
-from constants import KILL_REWARD
-from constants import WAY_S
-from constants import WAY_M
-from constants import WAY_L
+from constants import KILL_REWARD, WAY_S, WAY_M, WAY_L, WORLD_DAMAGE
 from enemy_data import ENEMY_DATA
 
 
 class Enemy(pg.sprite.Sprite):
-	def __init__(self, waypoints, image, health, speed):
+	def __init__(self, waypoints, image, health, speed, reward):
 		pg.sprite.Sprite.__init__(self)
 		self.waypoints = waypoints
 		self.pos = Vector2(self.waypoints[0])
@@ -25,12 +22,15 @@ class Enemy(pg.sprite.Sprite):
 		self.damage = 0
 		self.speed = speed
 
+		self.reward_score = reward
+
+
 	def update(self, world):
-		self.move()
+		self.move(world)
 		self.rotate()
 		self.check_alive(world)
 
-	def move(self):
+	def move(self, world):
 		#define a target weypoint
 		if self.target_waypoint < len(self.waypoints):
 			self.target = Vector2(self.waypoints[self.target_waypoint])
@@ -38,6 +38,10 @@ class Enemy(pg.sprite.Sprite):
 		else:
 			#enemy has reached the end of the path
 			self.kill()
+			world.health -= WORLD_DAMAGE
+			world.missed_enemies += 1
+			world.score -= 1
+
 		#calculate distance to target
 		dist = self.movement.length()
 		#cheking distance and moving to next waypoint
@@ -62,6 +66,8 @@ class Enemy(pg.sprite.Sprite):
 	def check_alive(self, world):
 		if self.health <= 0:
 			world.money += KILL_REWARD
+			world.score += self.reward_score
+			world.killed_enemies += 1
 			self.kill()
 
 class Weak(Enemy):
@@ -72,7 +78,7 @@ class Weak(Enemy):
 	def __init__(self):
 		if Weak.enemy_image is None:
 			Weak.enemy_image = pg.image.load("assets/images/enemies/enemy_1.png").convert_alpha()
-		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["weak"]["health"]), int(ENEMY_DATA["weak"]["speed"]))
+		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["weak"]["health"]), int(ENEMY_DATA["weak"]["speed"]), 1)
 
 
 class Medium(Enemy):
@@ -81,7 +87,7 @@ class Medium(Enemy):
 
 	def __init__(self):
 		Medium.enemy_image = pg.image.load("assets/images/enemies/enemy_2.png").convert_alpha()
-		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["medium"]["health"]), int(ENEMY_DATA["medium"]["speed"]))
+		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["medium"]["health"]), int(ENEMY_DATA["medium"]["speed"]), 3)
 
 
 class Strong(Enemy):
@@ -90,7 +96,7 @@ class Strong(Enemy):
 
 	def __init__(self):
 		Strong.enemy_image = pg.image.load("assets/images/enemies/enemy_3.png").convert_alpha()
-		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["strong"]["health"]), int(ENEMY_DATA["strong"]["speed"]))
+		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["strong"]["health"]), int(ENEMY_DATA["strong"]["speed"]), 5)
 
 
 class Elite(Enemy):
@@ -99,7 +105,7 @@ class Elite(Enemy):
 
 	def __init__(self):
 		Elite.enemy_image = pg.image.load("assets/images/enemies/enemy_4.png").convert_alpha()
-		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["elite"]["health"]), int(ENEMY_DATA["elite"]["speed"]))
+		super().__init__(self.way, self.enemy_image, int(ENEMY_DATA["elite"]["health"]), int(ENEMY_DATA["elite"]["speed"]), 10)
 
 
 class EnemyFactory():
