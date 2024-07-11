@@ -275,7 +275,3 @@ class Menu:
 
             pygame.display.flip()
 
-
-# Пример использования:
-menu = Menu(user_id=1)
-menu.run()
