@@ -7,6 +7,7 @@ from turret import Turret
 from button import Button
 from database import get_level_record, save_level_record
 
+
 class Game:
     def __init__(self, level, user_id):
         # Initialize Pygame
@@ -52,6 +53,7 @@ class Game:
         self.restart_image = pg.image.load("assets/images/buttons/restart.png").convert_alpha()
         self.menu_image = pg.image.load("assets/images/buttons/restart.png").convert_alpha()
 
+
         # Create world
         self.world = World(self.map_image, self.level)
         self.world.process_enemies()
@@ -69,6 +71,7 @@ class Game:
         self.speed_button = Button(c.SCREEN_WIDTH + 50, 360, self.speed_image, True)
         self.restart_button = Button(310, 340, self.restart_image, True)
         self.menu_button = Button(310, 410, self.menu_image, True)
+        self.right_menu_button = Button(c.SCREEN_WIDTH + 50, 550, self.menu_image, True)
 
         # Load fonts for displaying text on the screen
         self.text_font = pg.font.SysFont("Consolas", 24, bold=True)
@@ -170,6 +173,10 @@ class Game:
                 self.game_paused = False
             if self.speed_button.draw(self.screen):
                 self.game_speed = 2 if self.game_speed == 1 else 1
+            if self.right_menu_button.draw(self.screen):
+                import menu
+                m = menu.Menu(self.user_id)
+                run = False
 
             if not self.game_over:
                 # check if level has started
@@ -210,7 +217,9 @@ class Game:
                     self.enemy_group.empty()
                     self.turret_group.empty()
                 if self.menu_button.draw(self.screen):
-                    print("MENU")
+                    import menu
+                    m = menu.Menu(self.user_id)
+                    run = False
 
             # check if the level finished
             if self.world.check_level_complete() and not self.game_over:
@@ -227,8 +236,6 @@ class Game:
 
             # Event handler
             for event in pg.event.get():
-                if event.type == pg.QUIT:
-                    run = False
                 if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
                     mouse_pos = pg.mouse.get_pos()
                     if mouse_pos[0] < c.SCREEN_WIDTH and mouse_pos[1] < c.SCREEN_HEIGTH:
@@ -247,4 +254,3 @@ class Game:
             # Update display
             pg.display.flip()
 
-        pg.quit()

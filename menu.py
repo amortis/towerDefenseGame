@@ -3,6 +3,7 @@ import database  # Импорт функций из database.py
 
 class Menu:
     def __init__(self, user_id):
+
         pygame.init()
 
         self.WIDTH, self.HEIGHT = 1260, 640  # Новые размеры окна
@@ -18,6 +19,7 @@ class Menu:
         self.small_font = pygame.font.Font(None, 36)
 
         self.user_id = user_id
+        self.unlocked_levels = len(database.get_level_records(self.user_id))
 
         button_width = 350  # Увеличенная ширина кнопок
         button_height = 60
@@ -33,6 +35,12 @@ class Menu:
         self.records_active = False
         self.help_active = False
         self.exit_active = False
+        self.main_menu_active = True
+
+        # Кнопка назад и кнопки уровней
+        self.back_button = pygame.Rect(20, 20, 150, 50)
+        self.level_buttons = [pygame.Rect((self.WIDTH - 100 * 5 - 20 * 4) // 2 + (i % 5) * (100 + 20),
+                                          100 + (i // 5) * (50 + 20), 100, 50) for i in range(15)]
 
     def draw_text(self, surface, text, pos, font, color):
         text_surface = font.render(text, True, color)
@@ -53,44 +61,57 @@ class Menu:
         while running:
             self.win.fill(self.WHITE)
 
+            if self.main_menu_active:
+                self.draw_text(self.win, database.get_username(self.user_id), (10,10),self.font, self.BLACK)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                    pygame.quit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        self.main_menu_active = True
+                        self.level_select_active = False
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.play_button.collidepoint(event.pos):
-                        self.play_active = True
-                    elif self.records_button.collidepoint(event.pos):
-                        self.records_active = True
-                    elif self.help_button.collidepoint(event.pos):
-                        self.help_active = True
-                    elif self.exit_button.collidepoint(event.pos):
-                        self.exit_active = True
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    if self.play_active and self.play_button.collidepoint(event.pos):
-                        print(f"User {self.user_id} started the game")
-                        # Здесь можно добавить логику для запуска игры
-                    elif self.records_active and self.records_button.collidepoint(event.pos):
-                        print(f"User {self.user_id} opened the records")
-                        # Здесь можно добавить логику для открытия таблицы рекордов
-                    elif self.help_active and self.help_button.collidepoint(event.pos):
-                        print(f"User {self.user_id} opened help")
-                        # Здесь можно добавить логику для открытия справки
-                    elif self.exit_active and self.exit_button.collidepoint(event.pos):
-                        running = False
+                    if self.main_menu_active:
+                        if self.play_button.collidepoint(event.pos):
+                            self.main_menu_active = False
+                            self.level_select_active = True
+                        elif self.records_button.collidepoint(event.pos):
+                            print(f"User {self.user_id} checked records")
+                        elif self.help_button.collidepoint(event.pos):
+                            print(f"User {self.user_id} checked help")
+                        elif self.exit_button.collidepoint(event.pos):
+                            running = False
+                    elif self.level_select_active:
+                        if self.back_button.collidepoint(event.pos):
+                            self.main_menu_active = True
+                            self.level_select_active = False
+                        else:
+                            for i, button in enumerate(self.level_buttons):
+                                if button.collidepoint(event.pos) and i <= self.unlocked_levels:
+                                    # Запуск игры
+                                    import game # Ленивый импорт
+                                    game.Game(user_id=self.user_id, level=i+1)
+                                    print(f"User {self.user_id} selected level {i + 1}")
 
-                    self.play_active = False
-                    self.records_active = False
-                    self.help_active = False
-                    self.exit_active = False
-
-            self.draw_button(self.win, self.play_button, "Играть", self.font, self.LIGHT_GRAY, self.DARK_GRAY, self.play_active)
-            self.draw_button(self.win, self.records_button, "Таблица рекордов", self.font, self.LIGHT_GRAY, self.DARK_GRAY, self.records_active)
-            self.draw_button(self.win, self.help_button, "Справка", self.font, self.LIGHT_GRAY, self.DARK_GRAY, self.help_active)
-            self.draw_button(self.win, self.exit_button, "Выход", self.font, self.LIGHT_GRAY, self.DARK_GRAY, self.exit_active)
+            if self.main_menu_active:
+                self.draw_button(self.win, self.play_button, "Играть", self.font, self.LIGHT_GRAY, self.DARK_GRAY,
+                                 False)
+                self.draw_button(self.win, self.records_button, "Таблица рекордов", self.font, self.LIGHT_GRAY,
+                                 self.DARK_GRAY, False)
+                self.draw_button(self.win, self.help_button, "Справка", self.font, self.LIGHT_GRAY, self.DARK_GRAY,
+                                 False)
+                self.draw_button(self.win, self.exit_button, "Выход", self.font, self.LIGHT_GRAY, self.DARK_GRAY, False)
+            elif self.level_select_active:
+                self.draw_text(self.win, "Выбор уровня", (self.WIDTH // 2 - 100, 20), font=self.font, color=self.BLACK)
+                self.draw_button(self.win, self.back_button, "Назад", self.small_font, self.LIGHT_GRAY, self.DARK_GRAY,
+                                 False)
+                unlocked_levels = len(database.get_level_records(self.user_id)) + 1
+                for i, button in enumerate(self.level_buttons):
+                    self.draw_button(self.win, button, str(i + 1), self.small_font, self.LIGHT_GRAY, self.DARK_GRAY,
+                                     i < unlocked_levels)
 
             pygame.display.flip()
-
-        pygame.quit()
 
 # Пример использования:
 menu = Menu(user_id=1)

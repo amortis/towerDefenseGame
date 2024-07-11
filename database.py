@@ -49,6 +49,15 @@ def login_user(username, password):
         print("Invalid username or password!")
         return None
 
+def get_username(user_id):
+    conn = sqlite3.connect('tower_defense.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM users WHERE id = ?", (user_id,))
+    result = cursor.fetchone()
+    conn.close()
+    if result:
+        return result[0]
+    return None
 
 def save_level_record(user_id, level, score):
     """
