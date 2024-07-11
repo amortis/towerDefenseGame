@@ -34,7 +34,8 @@ class Game:
         self.level = level
 
         # Load images
-        self.map_image = pg.image.load("bg1.png").convert_alpha()
+        self.map_image = pg.image.load("bg.png").convert_alpha()
+        self.map_image2 = pg.image.load("bg1.png").convert_alpha()
         self.turret_sheets = pg.image.load("assets/images/turrets/turret_1.png").convert_alpha()
         self.cursor_turret = pg.image.load("assets/images/turrets/cursor_turret.png").convert_alpha()
         self.enemy_images = {
@@ -55,8 +56,11 @@ class Game:
 
 
         # Create world
-        self.world = World(self.map_image, self.level)
+        self.world = World(self.map_image, self.level, self.map_image2)
         self.world.process_enemies()
+
+        # переменная для туреллей
+        self.opt = 0
 
         # Create groups
         self.enemy_group = pg.sprite.Group()
@@ -152,7 +156,7 @@ class Game:
             ################
             self.screen.fill("grey")
             # Draw level
-            self.world.draw(self.screen)
+            self.world.draw(self.screen, self.opt)
             # Draw groups
             self.enemy_group.draw(self.screen)
             for turret in self.turret_group:
@@ -164,9 +168,11 @@ class Game:
             # Draw buttons
             if self.turret_button.draw(self.screen):
                 self.placing_turrets = True
+                self.opt = 1
             if self.placing_turrets:
                 if self.cancel_button.draw(self.screen):
                     self.placing_turrets = False
+                    self.opt = 0
             if self.pause_button.draw(self.screen):
                 self.game_paused = not self.game_paused
             if self.play_button.draw(self.screen):

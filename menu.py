@@ -47,6 +47,7 @@ class Menu:
         self.level_select_active = False
         self.help_page = 1
 
+
         # Кнопка назад и кнопки уровней
         self.back_button = pygame.Rect(20, 20, 150, 50)
         self.level_buttons = [pygame.Rect((self.WIDTH - 100 * 5 - 20 * 4) // 2 + (i % 5) * (100 + 20),
