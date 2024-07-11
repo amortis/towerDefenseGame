@@ -117,4 +117,13 @@ def get_level_record(user_id, level):
     conn.close()
     return record[0][1]
 
+def get_top_level_records():
+    # Предполагаем, что у вас есть соединение с базой данных
+    connection = sqlite3.connect('tower_defense.db')  # Ваше соединение с базой данных
+    cursor = connection.cursor()
+    query = "SELECT * FROM level_records ORDER BY score DESC LIMIT 10"
+    cursor.execute(query)
+    records = cursor.fetchall()
+    return records
+
 save_level_record(1,1,120)
