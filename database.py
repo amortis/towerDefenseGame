@@ -156,5 +156,3 @@ def get_top_level_records():
     cursor.execute(query)
     records = cursor.fetchall()
     return records
-
-save_level_record(1,1,120)

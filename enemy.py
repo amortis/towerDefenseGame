@@ -31,20 +31,20 @@ class Enemy(pg.sprite.Sprite):
 		self.check_alive(world)
 
 	def move(self, world):
-		#define a target weypoint
+		# определить целевую контрольную точку
 		if self.target_waypoint < len(self.waypoints):
 			self.target = Vector2(self.waypoints[self.target_waypoint])
 			self.movement = self.target - self.pos
 		else:
-			#enemy has reached the end of the path
+			# враг достиг конца пути
 			self.kill()
 			world.health -= WORLD_DAMAGE
 			world.missed_enemies += 1
 			world.score -= 1
 
-		#calculate distance to target
+		# рассчитать расстояние до цели
 		dist = self.movement.length()
-		#cheking distance and moving to next waypoint
+		# проверка расстояния и переход к следующей контрольной точке
 		if dist >= self.speed:
 			self.pos += self.movement.normalize() * self.speed
 			self.rect.center = (int(self.pos.x), int(self.pos.y))

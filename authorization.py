@@ -37,7 +37,7 @@ def login():
 database.create_database()
 # Создание окна
 root = tk.Tk()
-root.title("Tower Defense - Вход")
+root.title("Стражи пути - Вход")
 
 # Настройки окна
 root.geometry("400x300")

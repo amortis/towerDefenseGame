@@ -10,7 +10,7 @@ class Menu:
 
         self.WIDTH, self.HEIGHT = 1260, 780  # Новые размеры окна
         self.win = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        pygame.display.set_caption("Tower Defense - Меню")
+        pygame.display.set_caption("Стражи пути - Меню")
 
         self.WHITE = (255, 255, 255)
         self.BLACK = (0, 0, 0)
@@ -235,6 +235,7 @@ class Menu:
                             self.help_page = 1
 
             if self.main_menu_active:
+                self.draw_text(self.win, "Стражи пути", (self.WIDTH // 2 - 100, 20), self.font, color=self.BLACK)
                 self.draw_button(self.win, self.play_button, "Играть", self.font, self.LIGHT_GRAY, self.DARK_GRAY,
                                  False)
                 self.draw_button(self.win, self.records_button, "Таблица рекордов", self.font, self.LIGHT_GRAY,

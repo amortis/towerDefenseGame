@@ -20,7 +20,7 @@ class Game:
 
         # Create window
         self.screen = pg.display.set_mode((c.SCREEN_WIDTH + c.SIDE_PANEL, c.SCREEN_HEIGTH))
-        pg.display.set_caption("Tower Defense")
+        pg.display.set_caption("Стражи пути")
 
         # Gaming variables
         self.last_enemy_spawn = pg.time.get_ticks()
@@ -134,6 +134,14 @@ class Game:
     def put_record(self, score):
         save_level_record(self.user_id, self.level, score)
 
+    def spawn_enemies(self):
+        if not self.game_paused and pg.time.get_ticks() - self.last_enemy_spawn > c.SPAWN_COOLDOWN:
+            if self.world.spawned_enemies < len(self.world.enemy_list):
+                enemy_type = self.world.enemy_list[self.world.spawned_enemies]
+                enemy = EnemyFactory.create_enemy(enemy_type)
+                self.enemy_group.add(enemy)
+                self.world.spawned_enemies += 1
+                self.last_enemy_spawn = pg.time.get_ticks()
     def run_game(self):
         run = True
         while run:
@@ -190,14 +198,8 @@ class Game:
                     if self.begin_button.draw(self.screen):
                         self.level_started = True
                 else:
-                    # Spawning enemies
-                    if not self.game_paused and pg.time.get_ticks() - self.last_enemy_spawn > c.SPAWN_COOLDOWN:
-                        if self.world.spawned_enemies < len(self.world.enemy_list):
-                            enemy_type = self.world.enemy_list[self.world.spawned_enemies]
-                            enemy = EnemyFactory.create_enemy(enemy_type)
-                            self.enemy_group.add(enemy)
-                            self.world.spawned_enemies += 1
-                            self.last_enemy_spawn = pg.time.get_ticks()
+                    # Спавн врагов
+                    self.spawn_enemies()
             else:
                 pg.draw.rect(self.screen, "dodgerblue", (200, 200, 400, 300), border_radius=30)
                 if self.game_outcome == -1:
@@ -227,13 +229,13 @@ class Game:
                     m = menu.Menu(self.user_id)
                     run = False
 
-            # check if the level finished
+            # проверка что уровень пройден
             if self.world.check_level_complete() and not self.game_over:
                 self.level_started = False
                 self.game_over = True
                 self.game_outcome = 1
 
-            # check if player lost
+            # проверка что игрок проиграл
             if self.world.health <= 0 and not self.game_over:
                 self.level_started = False
                 self.game_paused = True
